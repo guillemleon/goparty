@@ -1,33 +1,54 @@
-import {View, TextInput, TouchableOpacity, Text} from 'react-native';
+import {View, TextInput, Text, ActivityIndicator} from 'react-native';
 import React, {useState} from 'react';
 import {styles} from './Form.styles';
-import Button from '../../../../common/components/button/Button';
+import Button from '../../../../common/components/Button/Button';
 import {Formik} from 'formik';
 import {customerRegisterValidationSchema} from './FormValidationSchemas';
 
 export default function CustomerForm(props) {
-  const onSubmit = values => {
-    fetch('http://192.168.1.33:8000/api/auth/register/', {
+  const [httpCallInProgress, setHttpCallInProgress] = useState(false);
+  const [httpCallError, setHttpCallError] = useState({
+    hasError: false,
+    status: null,
+    message: '',
+  });
+
+  const onSubmit = async values => {
+    setHttpCallInProgress(true);
+    await fetch('http://192.168.1.33:8000/api/auth/register/customer/', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        username: values.name,
+        email: values.email,
         first_name: values.name,
         last_name: values.lastName,
-        email: values.email,
         phone: values.phone,
         password: values.password,
       }),
     })
       .then(res => {
-        console.log(res.status);
+        console.log(res);
+        if (res.status !== 201) {
+          setHttpCallError({
+            hasError: true,
+            status: res.status,
+            message: `${res.status} Sorry for the inconvenience, there was en error. Please, try again later.`,
+          });
+        } else {
+          console.log('CREATED!');
+        }
       })
       .catch(err => {
-        console.error(err);
-      });
+        setHttpCallError({
+          hasError: true,
+          status: err.status,
+          message: `${err.status} Sorry for the inconvenience, there was en error. Please, try again later.`,
+        });
+      })
+      .finally(() => setHttpCallInProgress(false));
   };
 
   return (
@@ -157,9 +178,19 @@ export default function CustomerForm(props) {
           {errors.termsAccepted && (
             <Text style={{color: '#ff4500'}}>{errors.termsAccepted}</Text>
           )} */}
-          <Button type="fire" onPress={handleSubmit}>
-            SUBMIT
-          </Button>
+          {!httpCallError.hasError ? (
+            <Button type="fire" onPress={handleSubmit}>
+              {httpCallInProgress ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <Text>SUBMIT</Text>
+              )}
+            </Button>
+          ) : (
+            <View>
+              <Text style={{color: 'red'}}>{httpCallError.message}</Text>
+            </View>
+          )}
         </View>
       )}
     </Formik>

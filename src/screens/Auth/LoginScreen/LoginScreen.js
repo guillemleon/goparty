@@ -15,7 +15,7 @@ import loginImage from '../../../assets/images/login.jpg';
 import logo from '../../../assets/images/logo.png';
 import facebookLogo from '../../../assets/images/facebook-logo.png';
 import googleLogo from '../../../assets/images/google-logo.png';
-import Button from '../../../common/components/button/Button';
+import Button from '../../../common/components/Button/Button';
 import {screen} from '../../../utils';
 
 export function LoginScreen(props) {

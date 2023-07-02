@@ -1,26 +1,27 @@
-import { StyleSheet, Dimensions } from "react-native";
+import {StyleSheet, Dimensions} from 'react-native';
 
-const windowWidth = Dimensions.get("window").width;
+const windowWidth = Dimensions.get('window').width;
 
 export const styles = StyleSheet.create({
   input: {
     width: windowWidth - 50,
     height: 50,
-    backgroundColor: "#FFF",
+    backgroundColor: '#FFF',
     borderRadius: 10,
     marginTop: 10,
     marginBottom: 10,
     paddingHorizontal: 10,
+    color: '#000000',
   },
   phoneInputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   prefixInput: {
     width: 60,
     height: 50,
-    backgroundColor: "#FFF",
+    backgroundColor: '#FFF',
     borderRadius: 10,
     marginTop: 10,
     marginBottom: 10,
@@ -29,30 +30,30 @@ export const styles = StyleSheet.create({
   phoneInput: {
     width: windowWidth - 120,
     height: 50,
-    backgroundColor: "#FFF",
+    backgroundColor: '#FFF',
     borderRadius: 10,
     marginTop: 10,
     marginBottom: 10,
     paddingHorizontal: 10,
   },
   checkboxContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginVertical: 10,
   },
   checkbox: {
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   labelContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginHorizontal: 8,
   },
   label: {
-    color: "#FFF",
+    color: '#FFF',
   },
   labelLink: {
-    color: "#00CEFB",
-    fontStyle: "italic",
+    color: '#00CEFB',
+    fontStyle: 'italic',
   },
 });

@@ -1,22 +1,13 @@
-import {
-  View,
-  TextInput,
-  Text,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  ScrollView,
-  SafeAreaView,
-  Platform,
-} from 'react-native';
-import React, {useState} from 'react';
+import {View, TextInput, Text} from 'react-native';
+import React from 'react';
 import {styles} from './Form.styles';
-import Button from '../../../../common/components/button/Button';
+import Button from '../../../../common/components/Button/Button';
 import {Formik} from 'formik';
 import {companyRegisterValidationSchema} from './FormValidationSchemas';
 
 export default function CompanyForm() {
   const onSubmit = values => {
-    fetch('http://192.168.1.33:8000/api/auth/register_company/', {
+    fetch('http://192.168.1.33:8000/api/auth/register/company/', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
