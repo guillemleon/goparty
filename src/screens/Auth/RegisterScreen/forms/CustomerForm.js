@@ -4,8 +4,12 @@ import {styles} from './Form.styles';
 import Button from '../../../../common/components/Button/Button';
 import {Formik} from 'formik';
 import {customerRegisterValidationSchema} from './FormValidationSchemas';
+import CustomModal from '../../../../common/components/CustomModal/CustomModal';
+import {ENV} from '../../../../utils';
 
 export default function CustomerForm(props) {
+  const {navigation} = props;
+
   const [httpCallInProgress, setHttpCallInProgress] = useState(false);
   const [httpCallError, setHttpCallError] = useState({
     hasError: false,
@@ -15,7 +19,7 @@ export default function CustomerForm(props) {
 
   const onSubmit = async values => {
     setHttpCallInProgress(true);
-    await fetch('http://192.168.1.33:8000/api/auth/register/customer/', {
+    await fetch(`${ENV.BASE_API}/auth/register/customer/`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -30,16 +34,16 @@ export default function CustomerForm(props) {
       }),
     })
       .then(res => {
-        console.log(res);
         if (res.status !== 201) {
+          console.log(res.headers.map.message);
           setHttpCallError({
             hasError: true,
             status: res.status,
-            message: `${res.status} Sorry for the inconvenience, there was en error. Please, try again later.`,
+            message:
+              res.headers.map.message ||
+              `Sorry for the inconvenience, there was en error. Please, try again later`,
           });
-        } else {
-          console.log('CREATED!');
-        }
+        } else navigation.goBack();
       })
       .catch(err => {
         setHttpCallError({
@@ -49,6 +53,12 @@ export default function CustomerForm(props) {
         });
       })
       .finally(() => setHttpCallInProgress(false));
+  };
+
+  const hideModal = () => {
+    setHttpCallError(prevState => {
+      return {...prevState, hasError: false};
+    });
   };
 
   return (
@@ -178,19 +188,20 @@ export default function CustomerForm(props) {
           {errors.termsAccepted && (
             <Text style={{color: '#ff4500'}}>{errors.termsAccepted}</Text>
           )} */}
-          {!httpCallError.hasError ? (
-            <Button type="fire" onPress={handleSubmit}>
-              {httpCallInProgress ? (
-                <ActivityIndicator size="small" color="#FFFFFF" />
-              ) : (
-                <Text>SUBMIT</Text>
-              )}
-            </Button>
-          ) : (
-            <View>
-              <Text style={{color: 'red'}}>{httpCallError.message}</Text>
-            </View>
-          )}
+          <Button type="fire" onPress={handleSubmit}>
+            {httpCallInProgress ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : (
+              <Text>SUBMIT</Text>
+            )}
+          </Button>
+          <CustomModal
+            show={httpCallError.hasError}
+            onOutsidePress={hideModal}
+            onButtonPress={hideModal}
+            title={'ERROR: '}
+            message={httpCallError.message}
+          />
         </View>
       )}
     </Formik>

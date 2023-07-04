@@ -1,13 +1,25 @@
-import {View, TextInput, Text} from 'react-native';
-import React from 'react';
+import {View, TextInput, Text, ActivityIndicator} from 'react-native';
+import React, {useState} from 'react';
 import {styles} from './Form.styles';
 import Button from '../../../../common/components/Button/Button';
 import {Formik} from 'formik';
 import {companyRegisterValidationSchema} from './FormValidationSchemas';
+import CustomModal from '../../../../common/components/CustomModal/CustomModal';
+import {ENV} from '../../../../utils';
 
-export default function CompanyForm() {
+export default function CompanyForm(props) {
+  const {navigation} = props;
+
+  const [httpCallInProgress, setHttpCallInProgress] = useState(false);
+  const [httpCallError, setHttpCallError] = useState({
+    hasError: false,
+    status: null,
+    message: '',
+  });
+
   const onSubmit = values => {
-    fetch('http://192.168.1.33:8000/api/auth/register/company/', {
+    setHttpCallInProgress(true);
+    fetch(`${ENV.BASE_API}/auth/register/company/`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -25,11 +37,31 @@ export default function CompanyForm() {
       }),
     })
       .then(res => {
-        console.log(res.status);
+        if (res.status !== 201) {
+          console.log(res.headers.map.message);
+          setHttpCallError({
+            hasError: true,
+            status: res.status,
+            message:
+              res.headers.map.message ||
+              `Sorry for the inconvenience, there was en error. Please, try again later`,
+          });
+        } else navigation.goBack();
       })
       .catch(err => {
-        console.error(err);
-      });
+        setHttpCallError({
+          hasError: true,
+          status: err.status,
+          message: `${err.status} Sorry for the inconvenience, there was en error. Please, try again later.`,
+        });
+      })
+      .finally(() => setHttpCallInProgress(false));
+  };
+
+  const hideModal = () => {
+    setHttpCallError(prevState => {
+      return {...prevState, hasError: false};
+    });
   };
 
   return (
@@ -202,8 +234,19 @@ export default function CompanyForm() {
             <Text style={{color: '#ff4500'}}>{errors.termsAccepted}</Text>
           )} */}
           <Button type="fire" onPress={handleSubmit}>
-            SUBMIT
+            {httpCallInProgress ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : (
+              <Text>SUBMIT</Text>
+            )}
           </Button>
+          <CustomModal
+            show={httpCallError.hasError}
+            onOutsidePress={hideModal}
+            onButtonPress={hideModal}
+            title={'ERROR: '}
+            message={httpCallError.message}
+          />
         </View>
       )}
     </Formik>

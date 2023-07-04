@@ -26,6 +26,8 @@ export const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     paddingHorizontal: 10,
+    color: '#000000',
+    textAlign: 'center',
   },
   phoneInput: {
     width: windowWidth - 120,
@@ -35,6 +37,7 @@ export const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     paddingHorizontal: 10,
+    color: '#000000',
   },
   checkboxContainer: {
     flexDirection: 'row',

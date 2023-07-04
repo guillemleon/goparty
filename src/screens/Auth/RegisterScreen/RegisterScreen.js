@@ -13,7 +13,8 @@ import {styles} from './RegisterScreen.styles';
 import CompanyForm from './forms/CompanyForm';
 import CustomerForm from './forms/CustomerForm';
 
-export function RegisterScreen() {
+export function RegisterScreen(props) {
+  const {navigation} = props;
   const [registerType, setRegisterType] = useState(0);
 
   return (
@@ -47,7 +48,11 @@ export function RegisterScreen() {
               </TouchableOpacity>
             </View>
 
-            {registerType === 0 ? <CustomerForm /> : <CompanyForm />}
+            {registerType === 0 ? (
+              <CustomerForm navigation={navigation} />
+            ) : (
+              <CompanyForm navigation={navigation} />
+            )}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
