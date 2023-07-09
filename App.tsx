@@ -1,13 +1,5 @@
 import React, {useEffect} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {StatusBar, StyleSheet, View} from 'react-native';
 import {RootNavigation} from './src/navigation/RootNavigation';
 import SplashScreen from 'react-native-splash-screen';
 import {AuthProvider} from './src/context';

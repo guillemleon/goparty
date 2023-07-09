@@ -1,10 +1,13 @@
-import { Text, SafeAreaView } from "react-native";
-import React from "react";
+import React from 'react';
+import {CustomerNavigation} from './CustomerNavigation';
+import {CompanyNavigation} from './CompanyNavigation';
 
-export function AppNavigation() {
+export function AppNavigation(props) {
+  const {userType} = props;
+
   return (
-    <SafeAreaView>
-      <Text>AppNavigation</Text>
-    </SafeAreaView>
+    <>
+      {userType === 'company' ? <CompanyNavigation /> : <CustomerNavigation />}
+    </>
   );
 }

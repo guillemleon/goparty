@@ -21,9 +21,15 @@ import {screen} from '../../../utils';
 import {Formik} from 'formik';
 import {initialValues, loginValidationSchema} from './LoginValidationSchema';
 import {ENV} from '../../../utils';
+import {useAuth} from '../../../hooks';
+import {Auth} from '../../../api';
+import CustomModal from '../../../common/components/CustomModal/CustomModal';
+
+const auth = new Auth();
 
 export function LoginScreen(props) {
   const {navigation} = props;
+  const {login} = useAuth();
 
   const [httpCallInProgress, setHttpCallInProgress] = useState(false);
   const [httpCallError, setHttpCallError] = useState({
@@ -38,43 +44,32 @@ export function LoginScreen(props) {
 
   const onSubmit = async values => {
     setHttpCallInProgress(true);
-    await fetch(`${ENV.BASE_API}/auth/login/`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: values.email,
-        password: values.password,
-      }),
-    })
-      .then(res => {
-        if (res.status !== 200) {
-          console.log(res.headers.map.message);
-          setHttpCallError({
-            hasError: true,
-            status: res.status,
-            message:
-              res.headers.map.message ||
-              `Sorry for the inconvenience, there was en error. Please, try again later`,
-          });
-        } else {
-          console.log(res);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-        setHttpCallError({
-          hasError: true,
-          status: err.status,
-          message: `${err.status} Sorry for the inconvenience, there was en error. Please, try again later.`,
-        });
-      })
-      .finally(() => setHttpCallInProgress(false));
+    try {
+      const response = await auth.post(
+        ENV.API_ROUTES.LOGIN,
+        {
+          email: values.email,
+          password: values.password,
+        },
+        setHttpCallError,
+      );
+      login(response);
+    } catch {
+      setHttpCallError({
+        hasError: true,
+        status: 500,
+        message: `Sorry for the inconvenience, there was en error. Please, try again later.`,
+      });
+    }
+
+    setHttpCallInProgress(false);
   };
 
-  const hideModal = () => {};
+  const hideModal = () => {
+    setHttpCallError(prevState => {
+      return {...prevState, hasError: false};
+    });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -162,6 +157,13 @@ export function LoginScreen(props) {
                 <Image style={styles.oAuthLogo} source={googleLogo} />
               </TouchableOpacity>
             </View>
+            <CustomModal
+              show={httpCallError.hasError}
+              onOutsidePress={hideModal}
+              onButtonPress={hideModal}
+              title={'ERROR: '}
+              message={httpCallError.message}
+            />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

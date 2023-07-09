@@ -1,4 +1,11 @@
-import {View, TextInput, Text, ActivityIndicator} from 'react-native';
+import {
+  View,
+  TextInput,
+  Text,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
+import CheckBox from '@react-native-community/checkbox';
 import React, {useState} from 'react';
 import {styles} from './Form.styles';
 import Button from '../../../../common/components/Button/Button';
@@ -6,6 +13,9 @@ import {Formik} from 'formik';
 import {companyRegisterValidationSchema} from './FormValidationSchemas';
 import CustomModal from '../../../../common/components/CustomModal/CustomModal';
 import {ENV} from '../../../../utils';
+import {Auth} from '../../../../api';
+
+const auth = new Auth();
 
 export default function CompanyForm(props) {
   const {navigation} = props;
@@ -17,45 +27,34 @@ export default function CompanyForm(props) {
     message: '',
   });
 
-  const onSubmit = values => {
+  const onSubmit = async values => {
     setHttpCallInProgress(true);
-    fetch(`${ENV.BASE_API}/auth/register/company/`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        company_name: values.companyName,
-        email: values.email,
-        password: values.password,
-        phone: values.phone,
-        country: values.country,
-        address: values.address,
-        cif: values.cif,
-        description: values.description,
-      }),
-    })
-      .then(res => {
-        if (res.status !== 201) {
-          console.log(res.headers.map.message);
-          setHttpCallError({
-            hasError: true,
-            status: res.status,
-            message:
-              res.headers.map.message ||
-              `Sorry for the inconvenience, there was en error. Please, try again later`,
-          });
-        } else navigation.goBack();
-      })
-      .catch(err => {
-        setHttpCallError({
-          hasError: true,
-          status: err.status,
-          message: `${err.status} Sorry for the inconvenience, there was en error. Please, try again later.`,
-        });
-      })
-      .finally(() => setHttpCallInProgress(false));
+    try {
+      await auth.post(
+        ENV.API_ROUTES.REGISTER_COMPANY,
+        {
+          company_name: values.companyName,
+          email: values.email,
+          password: values.password,
+          phone: values.phone,
+          country: values.country,
+          city: values.city,
+          address: values.address,
+          cif: values.cif,
+          description: values.description,
+          accepted_terms: values.termsAccepted,
+        },
+        setHttpCallError,
+        () => navigation.goBack(),
+      );
+    } catch {
+      setHttpCallError({
+        hasError: true,
+        status: 500,
+        message: `Sorry for the inconvenience, there was en error. Please, try again later.`,
+      });
+    }
+    setHttpCallInProgress(false);
   };
 
   const hideModal = () => {
@@ -69,6 +68,7 @@ export default function CompanyForm(props) {
       initialValues={{
         companyName: '',
         country: '',
+        city: '',
         address: '',
         cif: '',
         description: '',
@@ -77,7 +77,7 @@ export default function CompanyForm(props) {
         repeatPassword: '',
         prefix: '',
         phone: '',
-        /*  termsAccepted: false, */
+        termsAccepted: false,
       }}
       validationSchema={companyRegisterValidationSchema}
       onSubmit={onSubmit}
@@ -180,6 +180,18 @@ export default function CompanyForm(props) {
           )}
           <TextInput
             style={styles.input}
+            placeholder="City"
+            placeholderTextColor={'rgba(0,0,0,.5)'}
+            onChangeText={handleChange('city')}
+            onBlur={handleBlur('city')}
+            value={values.city}
+            inputMode="text"
+          />
+          {errors.country && (
+            <Text style={{color: '#ff4500'}}>{errors.city}</Text>
+          )}
+          <TextInput
+            style={styles.input}
             placeholder="Address"
             placeholderTextColor={'rgba(0,0,0,.5)'}
             onChangeText={handleChange('address')}
@@ -215,8 +227,8 @@ export default function CompanyForm(props) {
             <Text style={{color: '#ff4500'}}>{errors.description}</Text>
           )}
 
-          {/* <View style={styles.checkboxContainer}>
-            <Checkbox
+          <View style={styles.checkboxContainer}>
+            <CheckBox
               value={values.termsAccepted}
               onValueChange={() =>
                 setFieldValue('termsAccepted', !values.termsAccepted)
@@ -232,7 +244,7 @@ export default function CompanyForm(props) {
           </View>
           {errors.termsAccepted && (
             <Text style={{color: '#ff4500'}}>{errors.termsAccepted}</Text>
-          )} */}
+          )}
           <Button type="fire" onPress={handleSubmit}>
             {httpCallInProgress ? (
               <ActivityIndicator size="small" color="#FFFFFF" />
@@ -244,7 +256,7 @@ export default function CompanyForm(props) {
             show={httpCallError.hasError}
             onOutsidePress={hideModal}
             onButtonPress={hideModal}
-            title={'ERROR: '}
+            title={'ERROR'}
             message={httpCallError.message}
           />
         </View>

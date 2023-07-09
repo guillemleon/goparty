@@ -29,6 +29,7 @@ export const styles = StyleSheet.create({
   modalText: {
     color: '#FFFFFF',
     marginBottom: 25,
+    textAlign: 'center',
   },
   closeButton: {
     width: 200,

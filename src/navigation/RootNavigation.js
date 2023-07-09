@@ -6,12 +6,14 @@ import {useAuth} from '../hooks';
 export function RootNavigation() {
   const {auth} = useAuth();
 
-  console.log(auth);
-
   return (
     <>
       <StatusBar animated backgroundColor={'black'} />
-      {auth ? <AppNavigation /> : <AuthNavigation />}
+      {auth?.decodeToken ? (
+        <AppNavigation userType={auth?.type} />
+      ) : (
+        <AuthNavigation />
+      )}
     </>
   );
 }

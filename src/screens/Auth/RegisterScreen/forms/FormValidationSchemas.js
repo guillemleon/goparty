@@ -17,10 +17,10 @@ export const customerRegisterValidationSchema = yup.object().shape({
     .required('Repeat the password'),
   prefix: yup.number().positive(),
   phone: yup.number().required('Phone is required'),
-  /* termsAccepted: yup
+  termsAccepted: yup
     .boolean()
-    .isTrue("Terms and services need to be accepted")
-    .required("Terms and services need to be accepted"), */
+    .isTrue('Terms and services need to be accepted')
+    .required('Terms and services need to be accepted'),
 });
 
 export const companyRegisterValidationSchema = yup.object().shape({
@@ -40,11 +40,12 @@ export const companyRegisterValidationSchema = yup.object().shape({
   prefix: yup.number().positive(),
   phone: yup.number().required('Phone is required'),
   country: yup.string().required('Country is required'),
+  city: yup.string().required('City is required'),
   address: yup.string().required('Address is required'),
   cif: yup.string().required('CIF is required'),
   description: yup.string().required('Description is required'),
-  /* termsAccepted: yup
+  termsAccepted: yup
     .boolean()
-    .isTrue("Terms and services need to be accepted")
-    .required("Terms and services need to be accepted"), */
+    .isTrue('Terms and services need to be accepted')
+    .required('Terms and services need to be accepted'),
 });

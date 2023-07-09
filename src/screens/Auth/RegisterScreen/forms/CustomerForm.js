@@ -1,4 +1,11 @@
-import {View, TextInput, Text, ActivityIndicator} from 'react-native';
+import {
+  View,
+  TextInput,
+  Text,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
+import CheckBox from '@react-native-community/checkbox';
 import React, {useState} from 'react';
 import {styles} from './Form.styles';
 import Button from '../../../../common/components/Button/Button';
@@ -6,6 +13,9 @@ import {Formik} from 'formik';
 import {customerRegisterValidationSchema} from './FormValidationSchemas';
 import CustomModal from '../../../../common/components/CustomModal/CustomModal';
 import {ENV} from '../../../../utils';
+import {Auth} from '../../../../api';
+
+const auth = new Auth();
 
 export default function CustomerForm(props) {
   const {navigation} = props;
@@ -18,41 +28,31 @@ export default function CustomerForm(props) {
   });
 
   const onSubmit = async values => {
+    console.log(values);
     setHttpCallInProgress(true);
-    await fetch(`${ENV.BASE_API}/auth/register/customer/`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: values.email,
-        first_name: values.name,
-        last_name: values.lastName,
-        phone: values.phone,
-        password: values.password,
-      }),
-    })
-      .then(res => {
-        if (res.status !== 201) {
-          console.log(res.headers.map.message);
-          setHttpCallError({
-            hasError: true,
-            status: res.status,
-            message:
-              res.headers.map.message ||
-              `Sorry for the inconvenience, there was en error. Please, try again later`,
-          });
-        } else navigation.goBack();
-      })
-      .catch(err => {
-        setHttpCallError({
-          hasError: true,
-          status: err.status,
-          message: `${err.status} Sorry for the inconvenience, there was en error. Please, try again later.`,
-        });
-      })
-      .finally(() => setHttpCallInProgress(false));
+    try {
+      await auth.post(
+        ENV.API_ROUTES.REGISTER_CUSTOMER,
+        {
+          email: values.email,
+          first_name: values.name,
+          last_name: values.lastName,
+          phone: values.phone,
+          password: values.password,
+          accepted_terms: values.termsAccepted,
+        },
+        setHttpCallError,
+        () => navigation.goBack(),
+      );
+    } catch {
+      setHttpCallError({
+        hasError: true,
+        status: 500,
+        message: `Sorry for the inconvenience, there was en error. Please, try again later.`,
+      });
+    }
+
+    setHttpCallInProgress(false);
   };
 
   const hideModal = () => {
@@ -71,7 +71,7 @@ export default function CustomerForm(props) {
         repeatPassword: '',
         prefix: '',
         phone: '',
-        /* termsAccepted: false, */
+        termsAccepted: false,
       }}
       validationSchema={customerRegisterValidationSchema}
       onSubmit={onSubmit}
@@ -170,8 +170,8 @@ export default function CustomerForm(props) {
           {errors.phone && (
             <Text style={{color: '#ff4500'}}>{errors.phone}</Text>
           )}
-          {/* <View style={styles.checkboxContainer}>
-            <Checkbox
+          <View style={styles.checkboxContainer}>
+            <CheckBox
               value={values.termsAccepted}
               onValueChange={() =>
                 setFieldValue('termsAccepted', !values.termsAccepted)
@@ -187,7 +187,7 @@ export default function CustomerForm(props) {
           </View>
           {errors.termsAccepted && (
             <Text style={{color: '#ff4500'}}>{errors.termsAccepted}</Text>
-          )} */}
+          )}
           <Button type="fire" onPress={handleSubmit}>
             {httpCallInProgress ? (
               <ActivityIndicator size="small" color="#FFFFFF" />
