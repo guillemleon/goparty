@@ -1,7 +1,6 @@
 import {useState, useEffect, createContext} from 'react';
 import jwtDecode from 'jwt-decode';
 import {Auth, jwt} from '../api';
-import {ENV} from '../utils';
 
 const authController = new Auth();
 

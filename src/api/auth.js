@@ -32,6 +32,35 @@ export class Auth {
     return result;
   }
 
+  async get(endpoint, token, setHttpCallError, callback) {
+    const url = `${ENV.BASE_API}/${endpoint}/`;
+    const params = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const response = await fetch(url, params);
+    const result = await response.json();
+
+    if (!this.status.includes(response.status)) {
+      console.log(response.headers);
+      setHttpCallError({
+        hasError: true,
+        status: response.status,
+        message:
+          response.headers.map.message ||
+          `Sorry for the inconvenience, there was en error. Please, try again later`,
+      });
+    } else {
+      if (callback) callback();
+    }
+    console.log(result);
+    return result;
+  }
+
   async refreshToken(token) {
     const url = `${ENV.BASE_API}/${ENV.API_ROUTES.REFRESH_TOKEN}/`;
     const params = {

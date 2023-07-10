@@ -22,6 +22,9 @@ const customer = {
     tab: 'AccountTab',
     account: 'Account',
   },
+  eventDetail: {
+    eventDetail: 'EventDetail',
+  },
 };
 
 export const screen = {

@@ -7,7 +7,6 @@ export const styles = StyleSheet.create({
   container: {
     backgroundColor: '#242424',
     width: windowWidth,
-    height: windowHeight,
     alignItems: 'center',
     paddingVertical: 25,
   },

@@ -8,6 +8,7 @@ export const ENV = {
     REGISTER_COMPANY: 'auth/register/company',
     LOGIN: 'auth/login',
     REFRESH_TOKEN: 'auth/refresh_token',
+    EVENTS: 'event',
   },
   JWT: {
     ACCESS: 'access',
