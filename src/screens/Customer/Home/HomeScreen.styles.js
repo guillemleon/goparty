@@ -5,7 +5,7 @@ const windowHeight = Dimensions.get('window').height;
 
 export const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#242424',
+    backgroundColor: '#000000',
     width: windowWidth,
     alignItems: 'center',
     paddingVertical: 25,
@@ -27,5 +27,6 @@ export const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 24,
     fontWeight: '900',
+    marginBottom: 20,
   },
 });

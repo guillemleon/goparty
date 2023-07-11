@@ -29,6 +29,7 @@ export function HomeStack() {
           headerShown: true,
           headerTitleAlign: 'center',
           headerTitleStyle: {color: '#FFFFFF'},
+          headerTintColor: '#FFFFFF',
           headerStyle: {
             backgroundColor: '#000000',
           },

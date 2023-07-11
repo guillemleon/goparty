@@ -50,7 +50,7 @@ export function HomeScreen(props) {
   }, [accessToken]);
 
   return (
-    <View style={{backgroundColor: '#242424', height: '100%', width: '100%'}}>
+    <View style={{backgroundColor: '#000000', height: '100%', width: '100%'}}>
       <ScrollView contentContainerStyle={styles.container}>
         <TextInput
           placeholder="Search and discover"

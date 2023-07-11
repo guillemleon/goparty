@@ -14,6 +14,7 @@ import {customerRegisterValidationSchema} from './FormValidationSchemas';
 import CustomModal from '../../../../common/components/CustomModal/CustomModal';
 import {ENV} from '../../../../utils';
 import {Auth} from '../../../../api';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 
 const auth = new Auth();
 
