@@ -3,8 +3,8 @@ const SERVER_IP_PROD = 'goparty-server-develop-79027189d4a9.herokuapp.com';
 const API_KEY = 'AIzaSyCeN4uIbXCBvc7MRmUig_EHWoMihHdwjuQ';
 
 export const ENV = {
-  BASE_PATH: `http://${SERVER_IP_DEVELOP}`,
-  BASE_API: `http://${SERVER_IP_DEVELOP}/api`,
+  BASE_PATH: `http://${SERVER_IP_PROD}`,
+  BASE_API: `http://${SERVER_IP_PROD}/api`,
   API_ROUTES: {
     REGISTER_CUSTOMER: 'auth/register/customer',
     REGISTER_COMPANY: 'auth/register/company',
