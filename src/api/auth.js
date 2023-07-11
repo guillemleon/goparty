@@ -46,7 +46,6 @@ export class Auth {
     const result = await response.json();
 
     if (!this.status.includes(response.status)) {
-      console.log(response.headers);
       setHttpCallError({
         hasError: true,
         status: response.status,
@@ -57,7 +56,6 @@ export class Auth {
     } else {
       if (callback) callback();
     }
-    console.log(result);
     return result;
   }
 

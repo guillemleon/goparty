@@ -3,13 +3,11 @@ import React, {useEffect} from 'react';
 import {styles} from './EventDetail.styles';
 import {Image} from 'react-native-elements';
 import Button from '../../../common/components/Button/Button';
-import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
+// import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 
 export default function EventDetail(props) {
   const {route} = props;
   const event = route.params.event;
-
-  console.log(event.event_image);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -29,7 +27,7 @@ export default function EventDetail(props) {
         <Text style={styles.description}>{event.event_description}</Text>
       </View>
       <View style={styles.mapContainer}>
-        <View style={styles.map}>
+        {/* <View style={styles.map}>
           <MapView
             customMapStyle={styles.mapStyle}
             provider={PROVIDER_GOOGLE}
@@ -42,7 +40,7 @@ export default function EventDetail(props) {
             }}
             mapType="standard"
           />
-        </View>
+        </View> */}
         <Button type={'fire'}>Go to location</Button>
       </View>
     </ScrollView>
